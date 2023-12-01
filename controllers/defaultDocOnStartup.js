@@ -2,13 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 exports.pushData = async (req, res) => {
-  const connReff = mongoose.createConnection(
-    "mongodb://vetflow:vetflow%232023@65.1.93.205:27017/reference?authSource=admin&readPreference=primary&appname=MongoDB%20Compass&directConnection=true&ssl=false"
-  );
-  // const connInst = mongoose.createConnection(
-  //   "mongodb+srv://abhi07:abhiyadav07@cluster0.vn1ptrs.mongodb.net/?retryWrites=true&w=majority"
-  // );
-
+  const connReff = mongoose.createConnection(process.env.MONGO);
   const connInst = mongoose.createConnection(req.body.mongoInstUrl);
 
   const stateSchema = new Schema(
@@ -28,8 +22,6 @@ exports.pushData = async (req, res) => {
     .lean();
 
   Data.forEach(async (indexData) => {
-    //const Doc = new stateInst(indexData);
-    //const doc = await Doc.save();
     const doc = await stateInst.updateOne(
       { id: indexData.id, recordID: indexData.recordID },
       { $set: indexData },
@@ -182,13 +174,36 @@ exports.pushData = async (req, res) => {
   const sexInst = connInst.model("sex", sexSchema);
 
   var Data = await sexReff
-    .find({}, { _id: 0, __v: 0, createdAt: 0, updatedAt: 0 })
+    .find(
+      {},
+      {
+        _id: 0,
+        __v: 0,
+        createdAt: 0,
+        updatedAt: 0,
+        createdon: 0,
+        modifiedon: 0,
+        createdby: 0,
+        modifiedby: 0,
+      }
+    )
     .lean();
 
   Data.forEach(async (indexData) => {
+    let databody = {
+      id: indexData.id,
+      recordID: indexData.recordID,
+      speciesId: indexData.speciesid,
+      name: indexData.sex,
+      icon: indexData.icon,
+      iconimage: indexData.iconimage,
+      status: indexData.status,
+      is_neutered: indexData.is_neutered,
+    };
+
     const doc = await sexInst.updateOne(
       { id: indexData.id, recordID: indexData.recordID },
-      { $set: indexData },
+      { $set: databody },
       { upsert: true, lean: true }
     );
   });
@@ -210,9 +225,18 @@ exports.pushData = async (req, res) => {
     .lean();
 
   Data.forEach(async (indexData) => {
+    let databody = {
+      id: indexData.id,
+      recordID: indexData.recordID,
+      color: indexData.color,
+      authority_id: indexData.authority_id,
+      status: indexData.status,
+      test: indexData.test,
+    };
+
     const doc = await colorInst.updateOne(
       { id: indexData.id, recordID: indexData.recordID },
-      { $set: indexData },
+      { $set: databody },
       { upsert: true, lean: true }
     );
   });
@@ -274,8 +298,8 @@ exports.pushData = async (req, res) => {
     },
     { timestamps: true, strict: false }
   );
-  const timezoneReff = connReff.model("instance", timezoneSchema);
-  const timezoneInst = connInst.model("instance", timezoneSchema);
+  const timezoneReff = connReff.model("timezone", timezoneSchema);
+  const timezoneInst = connInst.model("timezone", timezoneSchema);
 
   var Data = await timezoneReff
     .find({}, { _id: 0, __v: 0, createdAt: 0, updatedAt: 0 })
