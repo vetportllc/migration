@@ -1,112 +1,8 @@
-/*
-
-const Edition = require("../models/edition.js");
-const path = require("path");
-const fs = require("fs-extra");
-const moment = require("moment");
-const readJsonSync = require("read-json-sync");
-const PublishedPages = require("../models/published_page.js");
-
-// Retrieve all Docs from the database.
-exports.migrate = async (req, res) => {
-  try {
-    console.log(req.query.id);
-    //var files = [];
-    //var readyfile = {};
-    let editionDoc = await Edition.findById(req.query.id); //TOIM
-
-    //console.log(req.query);
-    //return;
-    //const folderPath = "/mnt/Repository/" + req.query.path;
-    const folderPath = req.query.path;
-    //const folderPath = "/Users/abhi07/Desktop/VETPORT";
-    let start = moment(new Date("2018-01-01"));
-    let end = moment(new Date("2018-01-03"));
-    let diff = end.diff(start, "days");
-    for (let index = 0; index < diff; index++) {
-      start = start.add(1, "days");
-      console.log("start: ", start);
-
-      var pagefolder;
-      pagefolder = folderPath + "/" + start.format("YYYYMMDD");
-
-      if (fs.existsSync(pagefolder)) {
-        var pjson = {};
-        pjson.edition_id = editionDoc._id; //'604f140850b78c3257c19d4c'
-        pjson.publication_id = editionDoc.publication_id;
-        pjson.issue_date = start.format("YYYY-MM-DD"); //"T00:00:00.000+00:00"
-        let finaljson = await readjson(
-          pagefolder + "/toc.json",
-          pagefolder,
-          pjson
-        );
-        pjson.pages = finaljson;
-        pjson.total_pages = finaljson.length;
-        let upsertdoc = await upsert(pjson);
-      }
-    }
-    res.status(200).send("ok");
-  } catch (error) {
-    res.status(500).json(error.message);
-  }
-};
-
-const readjson = async (subpath, dir) => {
-  let toc = readJsonSync(subpath);
-  var pages = [];
-  for (var i = 0; i < toc.toc.length; i++) {
-    var item;
-    item = {};
-    item = toc.toc[i];
-    var final;
-    final = {};
-    var pagefolder;
-    pagefolder = dir + "/" + item.page_folder;
-    if (fs.existsSync(pagefolder + "/page.json")) {
-      let pdf = await readJsonSync(pagefolder + "/page.json");
-      final.cropped_pdf = pagefolder + "/" + pdf.pdf;
-    }
-    final.page = item.page_folder;
-    final.rs_content = item.page_title;
-    final.mapped_rs_content = item.page_title;
-    final.order = item.page;
-    final.thumbnail_image = pagefolder + "/page_thumbnail.jpg";
-    final.original_image = pagefolder + "/big_page.jpg";
-    //final.cropped_pdf = pagefolder+"/"+pdf.pdf
-    pages.push(final);
-  }
-  console.log("pages: ", pages);
-  return pages;
-};
-
-const upsert = async (req, res) => {
-  try {
-    const body = req;
-    console.log("body: ", body);
-    let doc = await PublishedPages.updateOne(
-      { edition_id: body.edition_id, issue_date: new Date(body.issue_date) },
-      { $set: body },
-      { upsert: true }
-    );
-    return doc;
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-*/
-
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 exports.pushData = async (req, res) => {
-  const connReff = mongoose.createConnection(
-    "mongodb://vetflow:vetflow%232023@65.1.93.205:27017/reference?authSource=admin&readPreference=primary&appname=MongoDB%20Compass&directConnection=true&ssl=false"
-  );
-  // const connInst = mongoose.createConnection(
-  //   "mongodb+srv://abhi07:abhiyadav07@cluster0.vn1ptrs.mongodb.net/?retryWrites=true&w=majority"
-  // );
-
+  const connReff = mongoose.createConnection(process.env.MONGO);
   const connInst = mongoose.createConnection(req.body.mongoInstUrl);
 
   const stateSchema = new Schema(
@@ -126,8 +22,6 @@ exports.pushData = async (req, res) => {
     .lean();
 
   Data.forEach(async (indexData) => {
-    //const Doc = new stateInst(indexData);
-    //const doc = await Doc.save();
     const doc = await stateInst.updateOne(
       { id: indexData.id, recordID: indexData.recordID },
       { $set: indexData },
@@ -280,13 +174,36 @@ exports.pushData = async (req, res) => {
   const sexInst = connInst.model("sex", sexSchema);
 
   var Data = await sexReff
-    .find({}, { _id: 0, __v: 0, createdAt: 0, updatedAt: 0 })
+    .find(
+      {},
+      {
+        _id: 0,
+        __v: 0,
+        createdAt: 0,
+        updatedAt: 0,
+        createdon: 0,
+        modifiedon: 0,
+        createdby: 0,
+        modifiedby: 0,
+      }
+    )
     .lean();
 
   Data.forEach(async (indexData) => {
+    let databody = {
+      id: indexData.id,
+      recordID: indexData.recordID,
+      speciesId: indexData.speciesid,
+      name: indexData.sex,
+      icon: indexData.icon,
+      iconimage: indexData.iconimage,
+      status: indexData.status,
+      is_neutered: indexData.is_neutered,
+    };
+
     const doc = await sexInst.updateOne(
       { id: indexData.id, recordID: indexData.recordID },
-      { $set: indexData },
+      { $set: databody },
       { upsert: true, lean: true }
     );
   });
@@ -308,9 +225,18 @@ exports.pushData = async (req, res) => {
     .lean();
 
   Data.forEach(async (indexData) => {
+    let databody = {
+      id: indexData.id,
+      recordID: indexData.recordID,
+      color: indexData.color,
+      authority_id: indexData.authority_id,
+      status: indexData.status,
+      test: indexData.test,
+    };
+
     const doc = await colorInst.updateOne(
       { id: indexData.id, recordID: indexData.recordID },
-      { $set: indexData },
+      { $set: databody },
       { upsert: true, lean: true }
     );
   });
@@ -372,8 +298,8 @@ exports.pushData = async (req, res) => {
     },
     { timestamps: true, strict: false }
   );
-  const timezoneReff = connReff.model("instance", timezoneSchema);
-  const timezoneInst = connInst.model("instance", timezoneSchema);
+  const timezoneReff = connReff.model("timezone", timezoneSchema);
+  const timezoneInst = connInst.model("timezone", timezoneSchema);
 
   var Data = await timezoneReff
     .find({}, { _id: 0, __v: 0, createdAt: 0, updatedAt: 0 })
