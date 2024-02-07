@@ -16,7 +16,7 @@ exports.pushData = async (req, res) => {
   Data.forEach(async (indexData) => {
     const doc = await stateInst.updateOne(
       { recordID: indexData.recordID },
-      { $set: indexData },
+      { $setOnInsert: indexData },
       { upsert: true, lean: true }
     );
   });
@@ -40,7 +40,7 @@ exports.pushData = async (req, res) => {
   Data.forEach(async (indexData) => {
     const doc = await plantypeInst.updateOne(
       { id: indexData.id, recordID: indexData.recordID },
-      { $set: indexData },
+      { $setOnInsert: indexData },
       { upsert: true, lean: true }
     );
   });
@@ -64,7 +64,7 @@ exports.pushData = async (req, res) => {
   Data.forEach(async (indexData) => {
     const doc = await plan_actionInst.updateOne(
       { id: indexData.id, recordID: indexData.recordID },
-      { $set: indexData },
+      { $setOnInsert: indexData },
       { upsert: true, lean: true }
     );
   });
@@ -94,7 +94,7 @@ exports.pushData = async (req, res) => {
   Data.forEach(async (indexData) => {
     const doc = await packagecontentInst.updateOne(
       { id: indexData.id, recordID: indexData.recordID },
-      { $set: indexData },
+      { $setOnInsert: indexData },
       { upsert: true, lean: true }
     );
   });
@@ -113,7 +113,7 @@ exports.pushData = async (req, res) => {
   Data.forEach(async (indexData) => {
     const doc = await consult_speciesInst.updateOne(
       { recordID: indexData.recordID },
-      { $set: indexData },
+      { $setOnInsert: indexData },
       { upsert: true, lean: true }
     );
   });
@@ -129,7 +129,7 @@ exports.pushData = async (req, res) => {
   Data.forEach(async (indexData) => {
     const doc = await breedInst.updateOne(
       { recordID: indexData.recordID },
-      { $set: indexData },
+      { $setOnInsert: indexData },
       { upsert: true, lean: true }
     );
   });
@@ -154,20 +154,10 @@ exports.pushData = async (req, res) => {
     .lean();
 
   Data.forEach(async (indexData) => {
-    let databody = {
-      recordID: indexData.recordID,
-      speciesId: indexData.speciesid,
-      name: indexData.sex,
-      icon: indexData.icon,
-      iconimage: indexData.iconimage,
-      status: indexData.status,
-      is_neutered: indexData.is_neutered,
-    };
-
     const doc = await sexInst.updateOne(
       { recordID: indexData.recordID },
-      //{ $set: databody },
-      { $set: indexData },
+      //{ $setOnInsert: databody },
+      { $setOnInsert: indexData },
       { upsert: true, lean: true }
     );
   });
@@ -181,18 +171,10 @@ exports.pushData = async (req, res) => {
     .lean();
 
   Data.forEach(async (indexData) => {
-    let databody = {
-      recordID: indexData.recordID,
-      name: indexData.name,
-      authority_id: indexData.authority_id,
-      status: indexData.status,
-      test: indexData.test,
-    };
-
     const doc = await colorInst.updateOne(
       { recordID: indexData.recordID },
-      //{ $set: databody },
-      { $set: indexData },
+      //{ $setOnInsert: databody },
+      { $setOnInsert: indexData },
 
       { upsert: true, lean: true }
     );
@@ -209,7 +191,7 @@ exports.pushData = async (req, res) => {
   Data.forEach(async (indexData) => {
     const doc = await countryInst.updateOne(
       { recordID: indexData.recordID },
-      { $set: indexData },
+      { $setOnInsert: indexData },
       { upsert: true, lean: true }
     );
   });
@@ -225,7 +207,7 @@ exports.pushData = async (req, res) => {
   Data.forEach(async (indexData) => {
     const doc = await instanceInst.updateOne(
       { recordID: indexData.recordID },
-      { $set: indexData },
+      { $setOnInsert: indexData },
       { upsert: true, lean: true }
     );
   });
@@ -241,7 +223,7 @@ exports.pushData = async (req, res) => {
   Data.forEach(async (indexData) => {
     const doc = await timezoneInst.updateOne(
       { name: indexData.name, abbr: indexData.abbr },
-      { $set: indexData },
+      { $setOnInsert: indexData },
       { upsert: true, lean: true }
     );
   });
@@ -257,7 +239,7 @@ exports.pushData = async (req, res) => {
   Data.forEach(async (indexData) => {
     const doc = await phone_typeInst.updateOne(
       { recordID: indexData.recordID },
-      { $set: indexData },
+      { $setOnInsert: indexData },
       { upsert: true, lean: true }
     );
   });
@@ -282,7 +264,7 @@ exports.pushData = async (req, res) => {
   Data.forEach(async (indexData) => {
     const doc = await species_colorInst.updateOne(
       { recordID: indexData.recordID },
-      { $set: indexData },
+      { $setOnInsert: indexData },
       { upsert: true, lean: true }
     );
   });
@@ -307,7 +289,7 @@ exports.pushData = async (req, res) => {
   Data.forEach(async (indexData) => {
     const doc = await staff_designationInst.updateOne(
       { recordID: indexData.recordID },
-      { $set: indexData },
+      { $setOnInsert: indexData },
       { upsert: true, lean: true }
     );
   });
@@ -323,7 +305,7 @@ exports.pushData = async (req, res) => {
   Data.forEach(async (indexData) => {
     const doc = await specialistInst.updateOne(
       { recordID: indexData.recordID },
-      { $set: indexData },
+      { $setOnInsert: indexData },
       { upsert: true, lean: true }
     );
   });
@@ -339,7 +321,7 @@ exports.pushData = async (req, res) => {
   Data.forEach(async (indexData) => {
     const doc = await s3_configInst.updateOne(
       { recordID: indexData.recordID },
-      { $set: indexData },
+      { $setOnInsert: indexData },
       { upsert: true, lean: true }
     );
   });
@@ -355,7 +337,7 @@ exports.pushData = async (req, res) => {
   Data.forEach(async (indexData) => {
     const doc = await referenceInst.updateOne(
       { recordID: indexData.recordID },
-      { $set: indexData },
+      { $setOnInsert: indexData },
       { upsert: true, lean: true }
     );
   });
@@ -380,7 +362,7 @@ exports.pushData = async (req, res) => {
   Data.forEach(async (indexData) => {
     const doc = await mrkt_categoryInst.updateOne(
       { recordID: indexData.recordID },
-      { $set: indexData },
+      { $setOnInsert: indexData },
       { upsert: true, lean: true }
     );
   });
@@ -396,7 +378,7 @@ exports.pushData = async (req, res) => {
   Data.forEach(async (indexData) => {
     const doc = await mrkt_itemInst.updateOne(
       { recordID: indexData.recordID },
-      { $set: indexData },
+      { $setOnInsert: indexData },
       { upsert: true, lean: true }
     );
   });
@@ -412,7 +394,7 @@ exports.pushData = async (req, res) => {
   Data.forEach(async (indexData) => {
     const doc = await diagnosisInst.updateOne(
       { recordID: indexData.recordID },
-      { $set: indexData },
+      { $setOnInsert: indexData },
       { upsert: true, lean: true }
     );
   });
@@ -436,7 +418,7 @@ exports.pushData = async (req, res) => {
   Data.forEach(async (indexData) => {
     const doc = await soap_typeInst.updateOne(
       { id: indexData.id, recordID: indexData.recordID },
-      { $set: indexData },
+      { $setOnInsert: indexData },
       { upsert: true, lean: true }
     );
   });
@@ -466,7 +448,7 @@ exports.pushData = async (req, res) => {
   Data.forEach(async (indexData) => {
     const doc = await template_masterInst.updateOne(
       { id: indexData.id, recordID: indexData.recordID },
-      { $set: indexData },
+      { $setOnInsert: indexData },
       { upsert: true, lean: true }
     );
   });
@@ -496,7 +478,7 @@ exports.pushData = async (req, res) => {
   Data.forEach(async (indexData) => {
     const doc = await template_typeInst.updateOne(
       { id: indexData.id, recordID: indexData.recordID },
-      { $set: indexData },
+      { $setOnInsert: indexData },
       { upsert: true, lean: true }
     );
   });
@@ -515,7 +497,132 @@ exports.pushData = async (req, res) => {
   Data.forEach(async (indexData) => {
     const doc = await template_keyInst.updateOne(
       { recordID: indexData.recordID },
-      { $set: indexData },
+      { $setOnInsert: indexData },
+      { upsert: true, lean: true }
+    );
+  });
+
+  // Modules
+  const modulesSchema = new Schema(
+    {
+      id: {
+        type: String,
+        trim: true,
+      },
+    },
+    { timestamps: true, strict: false }
+  );
+  const modulesReff = connReff.model("modules", modulesSchema);
+  const modulesInst = connInst.model("modules", modulesSchema);
+
+  var Data = await modulesReff
+    .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
+    .lean();
+
+  Data.forEach(async (indexData) => {
+    const doc = await modulesInst.updateOne(
+      { recordID: indexData.id },
+      { $setOnInsert: indexData },
+      { upsert: true, lean: true }
+    );
+  });
+
+  // Sub modules
+  const subModulesSchema = new Schema(
+    {
+      id: {
+        type: String,
+        trim: true,
+      },
+    },
+    { timestamps: true, strict: false }
+  );
+  const subModulesReff = connReff.model("sub_module", subModulesSchema);
+  const subModulesInst = connInst.model("sub_module", subModulesSchema);
+
+  var Data = await subModulesReff
+    .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
+    .lean();
+
+  Data.forEach(async (indexData) => {
+    const doc = await subModulesInst.updateOne(
+      { recordID: indexData.id },
+      { $setOnInsert: indexData },
+      { upsert: true, lean: true }
+    );
+  });
+
+  // Menu
+  const menuSchema = new Schema(
+    {
+      id: {
+        type: String,
+        trim: true,
+      },
+    },
+    { timestamps: true, strict: false }
+  );
+  const menuReff = connReff.model("menu", menuSchema, "menu");
+  const menuInst = connInst.model("menu", menuSchema, "menu");
+
+  var Data = await menuReff
+    .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
+    .lean();
+
+  Data.forEach(async (indexData) => {
+    const doc = await menuInst.updateOne(
+      { recordID: indexData.id },
+      { $setOnInsert: indexData },
+      { upsert: true, lean: true }
+    );
+  });
+
+  // Actions
+  const actionsSchema = new Schema(
+    {
+      id: {
+        type: String,
+        trim: true,
+      },
+    },
+    { timestamps: true, strict: false }
+  );
+  const actionsReff = connReff.model("actions", actionsSchema);
+  const actionsInst = connInst.model("actions", actionsSchema);
+
+  var Data = await actionsReff
+    .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
+    .lean();
+
+  Data.forEach(async (indexData) => {
+    const doc = await actionsInst.updateOne(
+      { recordID: indexData.id },
+      { $setOnInsert: indexData },
+      { upsert: true, lean: true }
+    );
+  });
+
+  // Pages
+  const pagesSchema = new Schema(
+    {
+      id: {
+        type: String,
+        trim: true,
+      },
+    },
+    { timestamps: true, strict: false }
+  );
+  const pagesReff = connReff.model("pages", pagesSchema);
+  const pagesInst = connInst.model("pages", pagesSchema);
+
+  var Data = await pagesReff
+    .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
+    .lean();
+
+  Data.forEach(async (indexData) => {
+    const doc = await pagesInst.updateOne(
+      { recordID: indexData.id },
+      { $setOnInsert: indexData },
       { upsert: true, lean: true }
     );
   });
@@ -523,3 +630,50 @@ exports.pushData = async (req, res) => {
   console.log("Completed");
   res.json("ok");
 };
+
+/* ----------- Migration using mongo client ----------- */
+//  try {
+//     const sourceClient = await MongoClient.connect(process.env.MONGO);
+//     const destinationClient = await MongoClient.connect(req.body.mongoInstUrl);
+
+//     const sourceDB = sourceClient.db();
+//     const destinationDB = destinationClient.db();
+
+//     // Fetch all collection names from source DB
+//     const collectionNames = await sourceDB.listCollections().toArray();
+
+//     // Iterate over each collection
+//     for (let i = 0; i < collectionNames.length; i++) {
+//       const collectionName = collectionNames[i].name;
+//       const sourceCollection = sourceDB.collection(collectionName);
+//       const destinationCollection = destinationDB.collection(collectionName);
+
+//       // Fetch all documents from source collection
+//       const documents = await sourceCollection.find({}).toArray();
+//       const indexes = await sourceCollection.listIndexes().toArray();
+
+//       for (let index of indexes) {
+//         if (index.name !== '_id_') {
+//             await destinationCollection.createIndex(index.key, { unique: index.unique });
+//         }
+//     }
+
+//       // Insert documents into destination collection
+//       if (documents.length) {
+//       await destinationCollection.insertMany(documents);
+//       }
+//       console.log(`Migrated ${documents.length} documents from ${collectionName}`);
+//     }
+
+//     console.log('Data migration completed.');
+
+//     // Close connections
+//     await sourceClient.close();
+//     await destinationClient.close();
+
+//     res.status(200).json({collectionNames})
+//   } catch (err) {
+//     res.status(500).json(err)
+//   }
+// }
+/* ----------- Migration using mongo client ----------- */
