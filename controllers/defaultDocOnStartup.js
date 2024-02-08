@@ -521,7 +521,7 @@ exports.pushData = async (req, res) => {
 
   Data.forEach(async (indexData) => {
     const doc = await modulesInst.updateOne(
-      { recordID: indexData.id },
+      { id: indexData.id },
       { $setOnInsert: indexData },
       { upsert: true, lean: true }
     );
@@ -546,7 +546,7 @@ exports.pushData = async (req, res) => {
 
   Data.forEach(async (indexData) => {
     const doc = await subModulesInst.updateOne(
-      { recordID: indexData.id },
+      { id: indexData.id },
       { $setOnInsert: indexData },
       { upsert: true, lean: true }
     );
@@ -571,7 +571,7 @@ exports.pushData = async (req, res) => {
 
   Data.forEach(async (indexData) => {
     const doc = await menuInst.updateOne(
-      { recordID: indexData.id },
+      { id: indexData.id },
       { $setOnInsert: indexData },
       { upsert: true, lean: true }
     );
@@ -596,7 +596,7 @@ exports.pushData = async (req, res) => {
 
   Data.forEach(async (indexData) => {
     const doc = await actionsInst.updateOne(
-      { recordID: indexData.id },
+      { id: indexData.id },
       { $setOnInsert: indexData },
       { upsert: true, lean: true }
     );
@@ -621,7 +621,108 @@ exports.pushData = async (req, res) => {
 
   Data.forEach(async (indexData) => {
     const doc = await pagesInst.updateOne(
-      { recordID: indexData.id },
+      { id: indexData.id },
+      { $setOnInsert: indexData },
+      { upsert: true, lean: true }
+    );
+  });
+
+  // Date format
+  const dateFormatSchema = new Schema({}, { timestamps: true, strict: false });
+  const dateFormatReff = connReff.model(
+    "date_format",
+    dateFormatSchema,
+    "date_format"
+  );
+  const dateFormatInst = connInst.model(
+    "date_format",
+    dateFormatSchema,
+    "date_format"
+  );
+
+  var Data = await dateFormatReff
+    .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
+    .lean();
+
+  Data.forEach(async (indexData) => {
+    const doc = await dateFormatInst.updateOne(
+      { format: indexData.format },
+      { $setOnInsert: indexData },
+      { upsert: true, lean: true }
+    );
+  });
+
+  // Time format
+  const timeFormatSchema = new Schema({}, { timestamps: true, strict: false });
+  const timeFormatReff = connReff.model(
+    "time_format",
+    timeFormatSchema,
+    "time_format"
+  );
+  const timeFormatInst = connInst.model(
+    "time_format",
+    timeFormatSchema,
+    "time_format"
+  );
+
+  var Data = await timeFormatReff
+    .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
+    .lean();
+
+  Data.forEach(async (indexData) => {
+    const doc = await timeFormatInst.updateOne(
+      { format: indexData.format },
+      { $setOnInsert: indexData },
+      { upsert: true, lean: true }
+    );
+  });
+
+  // Currencies
+  const currencySchema = new Schema({}, { timestamps: true, strict: false });
+  const currencyReff = connReff.model("currencies", currencySchema);
+  const currencyInst = connInst.model("currencies", currencySchema);
+
+  var Data = await currencyReff
+    .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
+    .lean();
+
+  Data.forEach(async (indexData) => {
+    const doc = await currencyInst.updateOne(
+      { code: indexData.code },
+      { $setOnInsert: indexData },
+      { upsert: true, lean: true }
+    );
+  });
+
+  // Appointment status
+  const appStatusSchema = new Schema({}, { timestamps: true, strict: false });
+  const appStatusReff = connReff.model("app_status", appStatusSchema);
+  const appStatusInst = connInst.model("app_status", appStatusSchema);
+
+  var Data = await appStatusReff
+    .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
+    .lean();
+
+  Data.forEach(async (indexData) => {
+    const doc = await appStatusInst.updateOne(
+      { name: indexData.name },
+      { $setOnInsert: indexData },
+      { upsert: true, lean: true }
+    );
+  });
+
+  // Package types
+  const pkgTypesSchema = new Schema({}, { timestamps: true, strict: false });
+  const pkgTypesReff = connReff.model("pkg_type", pkgTypesSchema);
+  const pkgTypesInst = connInst.model("pkg_type", pkgTypesSchema);
+
+  var Data = await pkgTypesReff
+    .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
+    .lean();
+
+  Data.forEach(async (indexData) => {
+    const doc = await pkgTypesInst.updateOne(
+      { id: indexData.id },
       { $setOnInsert: indexData },
       { upsert: true, lean: true }
     );
