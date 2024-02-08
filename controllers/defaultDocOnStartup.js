@@ -2,8 +2,12 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 exports.pushData = async (req, res) => {
+  const instanceURL = req.body?.mongoInstUrl ?? null;
+  if (!instanceURL) {
+    throw new Error("Instance url is required");
+  }
   const connReff = mongoose.createConnection(process.env.MONGO);
-  const connInst = mongoose.createConnection(req.body.mongoInstUrl);
+  const connInst = mongoose.createConnection(instanceURL);
 
   const stateSchema = new Schema({}, { timestamps: true, strict: false });
   const stateReff = connReff.model("state", stateSchema);
@@ -502,6 +506,58 @@ exports.pushData = async (req, res) => {
     );
   });
 
+  // usergroup
+  const usergroupSchema = new Schema({}, { timestamps: true, strict: false });
+  const usergrp_keyReff = connReff.model(
+    "usergroups",
+    usergroupSchema,
+    "usergroups"
+  );
+  const usergrp_keyInst = connInst.model(
+    "usergroups",
+    usergroupSchema,
+    "usergroups"
+  );
+
+  var Data = await usergrp_keyReff
+    .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
+    .lean();
+
+  Data.forEach(async (indexData) => {
+    const doc = await usergrp_keyInst.updateOne(
+      { name: indexData.name },
+      { $setOnInsert: indexData },
+      { upsert: true, lean: true }
+    );
+  });
+  //usergroup
+
+  // language_config
+  const langCfgSchema = new Schema({}, { timestamps: true, strict: false });
+  const langCfg_keyReff = connReff.model(
+    "language_config",
+    langCfgSchema,
+    "language_config"
+  );
+  const langCfg_keyInst = connInst.model(
+    "language_config",
+    langCfgSchema,
+    "language_config"
+  );
+
+  var Data = await langCfg_keyReff
+    .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
+    .lean();
+
+  Data.forEach(async (indexData) => {
+    const doc = await langCfg_keyInst.updateOne(
+      { id: indexData.id },
+      { $setOnInsert: indexData },
+      { upsert: true, lean: true }
+    );
+  });
+  //language_config
+
   // Modules
   const modulesSchema = new Schema(
     {
@@ -729,52 +785,5 @@ exports.pushData = async (req, res) => {
   });
 
   console.log("Completed");
-  res.json("ok");
+  res.status(200).json({ msg: "Data imported successfully" });
 };
-
-/* ----------- Migration using mongo client ----------- */
-//  try {
-//     const sourceClient = await MongoClient.connect(process.env.MONGO);
-//     const destinationClient = await MongoClient.connect(req.body.mongoInstUrl);
-
-//     const sourceDB = sourceClient.db();
-//     const destinationDB = destinationClient.db();
-
-//     // Fetch all collection names from source DB
-//     const collectionNames = await sourceDB.listCollections().toArray();
-
-//     // Iterate over each collection
-//     for (let i = 0; i < collectionNames.length; i++) {
-//       const collectionName = collectionNames[i].name;
-//       const sourceCollection = sourceDB.collection(collectionName);
-//       const destinationCollection = destinationDB.collection(collectionName);
-
-//       // Fetch all documents from source collection
-//       const documents = await sourceCollection.find({}).toArray();
-//       const indexes = await sourceCollection.listIndexes().toArray();
-
-//       for (let index of indexes) {
-//         if (index.name !== '_id_') {
-//             await destinationCollection.createIndex(index.key, { unique: index.unique });
-//         }
-//     }
-
-//       // Insert documents into destination collection
-//       if (documents.length) {
-//       await destinationCollection.insertMany(documents);
-//       }
-//       console.log(`Migrated ${documents.length} documents from ${collectionName}`);
-//     }
-
-//     console.log('Data migration completed.');
-
-//     // Close connections
-//     await sourceClient.close();
-//     await destinationClient.close();
-
-//     res.status(200).json({collectionNames})
-//   } catch (err) {
-//     res.status(500).json(err)
-//   }
-// }
-/* ----------- Migration using mongo client ----------- */
