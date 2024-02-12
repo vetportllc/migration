@@ -784,6 +784,23 @@ exports.pushData = async (req, res) => {
     );
   });
 
+  // Sequence
+  const sequenceSchema = new Schema({}, { timestamps: true, strict: false });
+  const sequenceReff = connReff.model("sequence", sequenceSchema, "sequence");
+  const sequenceInst = connInst.model("sequence", sequenceSchema, "sequence");
+
+  var Data = await sequenceReff
+    .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
+    .lean();
+
+  Data.forEach(async (indexData) => {
+    const doc = await sequenceInst.updateOne(
+      { id: indexData.id },
+      { $setOnInsert: indexData },
+      { upsert: true, lean: true }
+    );
+  });
+
   console.log("Completed");
   res.status(200).json({ msg: "Data imported successfully" });
 };
