@@ -12,12 +12,14 @@ exports.pushData = async (req, res) => {
   const stateSchema = new Schema({}, { timestamps: true, strict: false });
   // index for case insensitive unique
   stateSchema.index(
-  { name: 1, countryid: 1 },
-  {
-    collation: { locale: "en", strength: 2 },
-    unique: true,
-  }
-);
+
+    { name: 1, countryid: 1 },
+    {
+      collation: { locale: "en", strength: 2 },
+      unique: true,
+    }
+  );
+
   const stateReff = connReff.model("state", stateSchema);
   const stateInst = connInst.model("state", stateSchema);
 
@@ -44,12 +46,13 @@ exports.pushData = async (req, res) => {
   );
   // index for case insensitive unique
   plantypeSchema.index(
-  { name: 1 },
-  {
-    collation: { locale: "en", strength: 2 },
-    unique: true,
-  }
-);
+
+    { name: 1 },
+    {
+      collation: { locale: "en", strength: 2 },
+      unique: true,
+    }
+  );
   const plantypeReff = connReff.model("plan_type", plantypeSchema);
   const plantypeInst = connInst.model("plan_type", plantypeSchema);
 
@@ -76,12 +79,14 @@ exports.pushData = async (req, res) => {
   );
   // index for case insensitive unique
   plan_actionSchema.index(
-  { name: 1 },
-  {
-    collation: { locale: "en", strength: 2 },
-    unique: true,
-  }
-);
+
+    { name: 1 },
+    {
+      collation: { locale: "en", strength: 2 },
+      unique: true,
+    }
+  );
+  
   const plan_actionReff = connReff.model("planaction", plan_actionSchema);
   const plan_actionInst = connInst.model("planaction", plan_actionSchema);
 
@@ -107,14 +112,10 @@ exports.pushData = async (req, res) => {
     },
     { timestamps: true, strict: false }
   );
-  const contentTypeReff = connReff.model(
-    "content_type",
-    contentTypeSchema
-  );
-  const contentTypeInst = connInst.model(
-    "content_type",
-    contentTypeSchema
-  );
+
+  const contentTypeReff = connReff.model("content_type", contentTypeSchema);
+  const contentTypeInst = connInst.model("content_type", contentTypeSchema);
+
 
   var Data = await contentTypeReff
     .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
@@ -131,15 +132,17 @@ exports.pushData = async (req, res) => {
   const consult_speciesSchema = new Schema(
     {},
     { timestamps: true, strict: false }
-  );  
+
+  );
   // index for case insensitive unique
   consult_speciesSchema.index(
-  { name: 1 },
-  {
-    collation: { locale: "en", strength: 2 },
-    unique: true,
-  }
-);
+    { name: 1 },
+    {
+      collation: { locale: "en", strength: 2 },
+      unique: true,
+    }
+  );
+
   const consult_speciesReff = connReff.model("species", consult_speciesSchema);
   const consult_speciesInst = connInst.model("species", consult_speciesSchema);
 
@@ -158,12 +161,12 @@ exports.pushData = async (req, res) => {
   const breedSchema = new Schema({}, { timestamps: true, strict: false });
   // index for case insensitive unique
   breedSchema.index(
-  { name: 1, speciesId: 1 },
-  {
-    collation: { locale: "en", strength: 2 },
-    unique: true,
-  }
-);
+    { name: 1, speciesId: 1 },
+    {
+      collation: { locale: "en", strength: 2 },
+      unique: true,
+    }
+  );
   const breedReff = connReff.model("breed", breedSchema);
   const breedInst = connInst.model("breed", breedSchema);
 
@@ -182,12 +185,12 @@ exports.pushData = async (req, res) => {
   const sexSchema = new Schema({}, { timestamps: true, strict: false });
   // index for case insensitive unique
   sexSchema.index(
-  { name: 1, speciesId: 1 },
-  {
-    collation: { locale: "en", strength: 2 },
-    unique: true,
-  }
-);
+    { name: 1, speciesId: 1 },
+    {
+      collation: { locale: "en", strength: 2 },
+      unique: true,
+    }
+  );
   const sexReff = connReff.model("sex", sexSchema);
   const sexInst = connInst.model("sex", sexSchema);
 
@@ -218,12 +221,12 @@ exports.pushData = async (req, res) => {
   const colorSchema = new Schema({}, { timestamps: true, strict: false });
   // index for case insensitive unique
   colorSchema.index(
-  { name: 1 },
-  {
-    collation: { locale: "en", strength: 2 },
-    unique: true,
-  }
-);
+    { name: 1 },
+    {
+      collation: { locale: "en", strength: 2 },
+      unique: true,
+    }
+  );
   const colorReff = connReff.model("color", colorSchema);
   const colorInst = connInst.model("color", colorSchema);
 
@@ -244,12 +247,12 @@ exports.pushData = async (req, res) => {
   const countrySchema = new Schema({}, { timestamps: true, strict: false });
   // index for case insensitive unique
   countrySchema.index(
-  { name: 1 },
-  {
-    collation: { locale: "en", strength: 2 },
-    unique: true,
-  }
-);
+    { name: 1 },
+    {
+      collation: { locale: "en", strength: 2 },
+      unique: true,
+    }
+  );
   const countryReff = connReff.model("country", countrySchema);
   const countryInst = connInst.model("country", countrySchema);
 
@@ -300,12 +303,12 @@ exports.pushData = async (req, res) => {
   const phone_typeSchema = new Schema({}, { timestamps: true, strict: false });
   // index for case insensitive unique
   phone_typeSchema.index(
-  { name: 1 },
-  {
-    collation: { locale: "en", strength: 2 },
-    unique: true,
-  }
-);
+    { name: 1 },
+    {
+      collation: { locale: "en", strength: 2 },
+      unique: true,
+    }
+  );
   const phone_typeReff = connReff.model("phone_type", phone_typeSchema);
   const phone_typeInst = connInst.model("phone_type", phone_typeSchema);
 
@@ -352,12 +355,12 @@ exports.pushData = async (req, res) => {
   );
   // index for case insensitive unique
   staff_designationSchema.index(
-  { name: 1 },
-  {
-    collation: { locale: "en", strength: 2 },
-    unique: true,
-  }
-);
+    { name: 1 },
+    {
+      collation: { locale: "en", strength: 2 },
+      unique: true,
+    }
+  );
   const staff_designationReff = connReff.model(
     "staff_designation",
     staff_designationSchema
@@ -382,12 +385,13 @@ exports.pushData = async (req, res) => {
   const specialistSchema = new Schema({}, { timestamps: true, strict: false });
   // index for case insensitive unique
   specialistSchema.index(
-  { name: 1 },
-  {
-    collation: { locale: "en", strength: 2 },
-    unique: true,
-  }
-);
+    { name: 1 },
+    {
+      collation: { locale: "en", strength: 2 },
+      unique: true,
+    }
+  );
+
   const specialistReff = connReff.model("specialist", specialistSchema);
   const specialistInst = connInst.model("specialist", specialistSchema);
 
@@ -441,11 +445,13 @@ exports.pushData = async (req, res) => {
   );
   const mrkt_categoryReff = connReff.model(
     "mrkt_category",
-    mrkt_categorySchema, "mrkt_category"
+    mrkt_categorySchema,
+    "mrkt_category"
   );
   const mrkt_categoryInst = connInst.model(
     "mrkt_category",
-    mrkt_categorySchema, "mrkt_category"
+    mrkt_categorySchema,
+    "mrkt_category"
   );
 
   var Data = await mrkt_categoryReff
@@ -501,8 +507,16 @@ exports.pushData = async (req, res) => {
     },
     { timestamps: true, strict: false }
   );
-  const soap_typeReff = connReff.model("soap_type", soap_typeSchema, "soap_type");
-  const soap_typeInst = connInst.model("soap_type", soap_typeSchema, "soap_type");
+  const soap_typeReff = connReff.model(
+    "soap_type",
+    soap_typeSchema,
+    "soap_type"
+  );
+  const soap_typeInst = connInst.model(
+    "soap_type",
+    soap_typeSchema,
+    "soap_type"
+  );
 
   var Data = await soap_typeReff
     .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
@@ -525,8 +539,8 @@ exports.pushData = async (req, res) => {
       },
       name: {
         type: String,
-        unique: true
-      }
+        unique: true,
+      },
     },
     { timestamps: true, strict: false }
   );
@@ -584,7 +598,7 @@ exports.pushData = async (req, res) => {
 
   Data.forEach(async (indexData) => {
     const doc = await template_typeInst.updateOne(
-      { id: indexData.id},
+      { id: indexData.id },
       { $setOnInsert: indexData },
       { upsert: true, lean: true }
     );
@@ -592,7 +606,7 @@ exports.pushData = async (req, res) => {
 
   // Template keys
   const template_keySchema = new Schema(
-    {tag: {type: String, unique: true}},
+    { tag: { type: String, unique: true } },
     { timestamps: true, strict: false }
   );
   const template_keyReff = connReff.model("template_key", template_keySchema);
@@ -612,11 +626,17 @@ exports.pushData = async (req, res) => {
 
   // Template keys map
   const template_keymapSchema = new Schema(
-    {tempId: {type: Schema.Types.ObjectId, index:true}},
+    { tempId: { type: Schema.Types.ObjectId, index: true } },
     { timestamps: true, strict: false }
   );
-  const template_keymapReff = connReff.model("template_keymap", template_keymapSchema);
-  const template_keymapInst = connInst.model("template_keymap", template_keymapSchema);
+  const template_keymapReff = connReff.model(
+    "template_keymap",
+    template_keymapSchema
+  );
+  const template_keymapInst = connInst.model(
+    "template_keymap",
+    template_keymapSchema
+  );
 
   var Data = await template_keymapReff
     .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
@@ -624,31 +644,31 @@ exports.pushData = async (req, res) => {
 
   Data.forEach(async (indexData) => {
     const doc = await template_keymapInst.updateOne(
-      { keyId: indexData.keyId, tempId: indexData.tempId, },
+      { keyId: indexData.keyId, tempId: indexData.tempId },
       { $setOnInsert: indexData },
       { upsert: true, lean: true }
     );
   });
 
-    // Templates
-    const templateSchema = new Schema(
-      {name: {type: String, unique:true}},
-      { timestamps: true, strict: false }
+  // Templates
+  const templateSchema = new Schema(
+    { name: { type: String, unique: true } },
+    { timestamps: true, strict: false }
+  );
+  const templateReff = connReff.model("template", templateSchema);
+  const templateInst = connInst.model("template", templateSchema);
+
+  var Data = await templateReff
+    .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
+    .lean();
+
+  Data.forEach(async (indexData) => {
+    const doc = await templateInst.updateOne(
+      { name: indexData.name },
+      { $setOnInsert: indexData },
+      { upsert: true, lean: true }
     );
-    const templateReff = connReff.model("template", templateSchema);
-    const templateInst = connInst.model("template", templateSchema);
-  
-    var Data = await templateReff
-      .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
-      .lean();
-  
-    Data.forEach(async (indexData) => {
-      const doc = await templateInst.updateOne(
-        { name: indexData.name},
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+  });
 
   // usergroup
   const usergroupSchema = new Schema({}, { timestamps: true, strict: false });
@@ -748,6 +768,422 @@ exports.pushData = async (req, res) => {
     const doc = await subModulesInst.updateOne(
       { id: indexData.id },
       { $setOnInsert: indexData },
+      { upsert: true, lean: true }
+    );
+  });
+
+  // Menu
+  const menuSchema = new Schema(
+    {
+      id: {
+        type: String,
+        trim: true,
+      },
+    },
+    { timestamps: true, strict: false }
+  );
+  const menuReff = connReff.model("menu", menuSchema, "menu");
+  const menuInst = connInst.model("menu", menuSchema, "menu");
+
+  var Data = await menuReff
+    .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
+    .lean();
+
+  Data.forEach(async (indexData) => {
+    const doc = await menuInst.updateOne(
+      { id: indexData.id },
+      { $setOnInsert: indexData },
+      { upsert: true, lean: true }
+    );
+  });
+
+  // Actions
+  const actionsSchema = new Schema(
+    {
+      id: {
+        type: String,
+        trim: true,
+      },
+    },
+    { timestamps: true, strict: false }
+  );
+  const actionsReff = connReff.model("actions", actionsSchema);
+  const actionsInst = connInst.model("actions", actionsSchema);
+
+  var Data = await actionsReff
+    .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
+    .lean();
+
+  Data.forEach(async (indexData) => {
+    const doc = await actionsInst.updateOne(
+      { id: indexData.id },
+      { $setOnInsert: indexData },
+      { upsert: true, lean: true }
+    );
+  });
+
+  // Pages
+  const pagesSchema = new Schema(
+    {
+      id: {
+        type: String,
+        trim: true,
+      },
+    },
+    { timestamps: true, strict: false }
+  );
+  const pagesReff = connReff.model("pages", pagesSchema);
+  const pagesInst = connInst.model("pages", pagesSchema);
+
+  var Data = await pagesReff
+    .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
+    .lean();
+
+  Data.forEach(async (indexData) => {
+    const doc = await pagesInst.updateOne(
+      { id: indexData.id },
+      { $setOnInsert: indexData },
+      { upsert: true, lean: true }
+    );
+  });
+
+  // Date format
+  const dateFormatSchema = new Schema({}, { timestamps: true, strict: false });
+  const dateFormatReff = connReff.model(
+    "date_format",
+    dateFormatSchema,
+    "date_format"
+  );
+  const dateFormatInst = connInst.model(
+    "date_format",
+    dateFormatSchema,
+    "date_format"
+  );
+
+  var Data = await dateFormatReff
+    .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
+    .lean();
+
+  Data.forEach(async (indexData) => {
+    const doc = await dateFormatInst.updateOne(
+      { format: indexData.format },
+      { $setOnInsert: indexData },
+      { upsert: true, lean: true }
+    );
+  });
+
+  // Time format
+  const timeFormatSchema = new Schema({}, { timestamps: true, strict: false });
+  const timeFormatReff = connReff.model(
+    "time_format",
+    timeFormatSchema,
+    "time_format"
+  );
+  const timeFormatInst = connInst.model(
+    "time_format",
+    timeFormatSchema,
+    "time_format"
+  );
+
+  var Data = await timeFormatReff
+    .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
+    .lean();
+
+  Data.forEach(async (indexData) => {
+    const doc = await timeFormatInst.updateOne(
+      { format: indexData.format },
+      { $setOnInsert: indexData },
+      { upsert: true, lean: true }
+    );
+  });
+
+  // Currencies
+  const currencySchema = new Schema({}, { timestamps: true, strict: false });
+  const currencyReff = connReff.model("currencies", currencySchema);
+  const currencyInst = connInst.model("currencies", currencySchema);
+
+  var Data = await currencyReff
+    .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
+    .lean();
+
+  Data.forEach(async (indexData) => {
+    const doc = await currencyInst.updateOne(
+      { code: indexData.code },
+      { $setOnInsert: indexData },
+      { upsert: true, lean: true }
+    );
+  });
+
+  // Appointment status
+  const appStatusSchema = new Schema({}, { timestamps: true, strict: false });
+  // index for case insensitive unique
+  appStatusSchema.index(
+    { name: 1 },
+    {
+      collation: { locale: "en", strength: 2 },
+      unique: true,
+    }
+  );
+  const appStatusReff = connReff.model("app_status", appStatusSchema);
+  const appStatusInst = connInst.model("app_status", appStatusSchema);
+
+  var Data = await appStatusReff
+    .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
+    .lean();
+
+  Data.forEach(async (indexData) => {
+    const doc = await appStatusInst.updateOne(
+      { name: indexData.name },
+      { $setOnInsert: indexData },
+      { upsert: true, lean: true }
+    );
+  });
+
+  // Package types
+  const pkgTypesSchema = new Schema({}, { timestamps: true, strict: false });
+  const pkgTypesReff = connReff.model("pkg_type", pkgTypesSchema);
+  const pkgTypesInst = connInst.model("pkg_type", pkgTypesSchema);
+
+  var Data = await pkgTypesReff
+    .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
+    .lean();
+
+  Data.forEach(async (indexData) => {
+    const doc = await pkgTypesInst.updateOne(
+      { id: indexData.id },
+      { $setOnInsert: indexData },
+      { upsert: true, lean: true }
+    );
+  });
+
+  // Sequence
+  const sequenceSchema = new Schema({}, { timestamps: true, strict: false });
+  const sequenceReff = connReff.model("sequence", sequenceSchema, "sequence");
+  const sequenceInst = connInst.model("sequence", sequenceSchema, "sequence");
+
+  var Data = await sequenceReff
+    .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
+    .lean();
+
+  Data.forEach(async (indexData) => {
+    const doc = await sequenceInst.updateOne(
+      { id: indexData.id },
+      { $setOnInsert: indexData },
+      { upsert: true, lean: true }
+    );
+  });
+
+  // OTC Client
+  const clientSchema = new Schema({}, { timestamps: true, strict: false });
+  const clientReff = connReff.model("client", clientSchema);
+  const clientInst = connInst.model("client", clientSchema);
+
+  var Data = await clientReff
+    .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
+    .lean();
+
+  Data.forEach(async (indexData) => {
+    const doc = await clientInst.updateOne(
+      { otc: indexData.otc },
+      { $setOnInsert: indexData },
+      { upsert: true, lean: true }
+    );
+  });
+
+  // OTC Patient
+  const patientSchema = new Schema({}, { timestamps: true, strict: false });
+  const patientReff = connReff.model("patient", patientSchema);
+  const patientInst = connInst.model("patient", patientSchema);
+
+  var Data = await patientReff
+    .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
+    .lean();
+
+  Data.forEach(async (indexData) => {
+    const doc = await patientInst.updateOne(
+      { otc: indexData.otc },
+      { $setOnInsert: indexData },
+      { upsert: true, lean: true }
+    );
+  });
+
+  // OTC Encounter
+  const encounterSchema = new Schema({}, { timestamps: true, strict: false });
+  const encounterReff = connReff.model("encounter", encounterSchema);
+  const encounterInst = connInst.model("encounter", encounterSchema);
+
+  var Data = await encounterReff
+    .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
+    .lean();
+
+  Data.forEach(async (indexData) => {
+    const doc = await encounterInst.updateOne(
+      { otc: indexData.otc },
+      { $setOnInsert: indexData },
+      { upsert: true, lean: true }
+    );
+  });
+
+  // credit Types
+  const creditTypeSchema = new Schema(
+    {
+      id: {
+        type: String,
+        trim: true,
+      },
+    },
+    { timestamps: true, strict: false }
+  );
+  const creditTypeReff = connReff.model("credit_type", creditTypeSchema);
+  const creditTypeInst = connInst.model("credit_type", creditTypeSchema);
+
+  var Data = await creditTypeReff
+    .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
+    .lean();
+
+  Data.forEach(async (indexData) => {
+    const doc = await creditTypeInst.updateOne(
+      { id: indexData.id },
+      { $setOnInsert: indexData },
+      { upsert: true, lean: true }
+    );
+  });
+
+  const label_setupSchema = new Schema({}, { timestamps: true, strict: false });
+  const label_setupReff = connReff.model("label_setup", label_setupSchema);
+  const label_setupInst = connInst.model("label_setup", label_setupSchema);
+
+  var Data = await label_setupReff
+    .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
+    .lean();
+
+  Data.forEach(async (indexData) => {
+    const doc = await label_setupInst.updateOne(
+      { recordID: indexData.recordID },
+      { $set: indexData },
+      { upsert: true, lean: true }
+    );
+  });
+
+  const consult_dspeciesSchema = new Schema(
+    {},
+    { timestamps: true, strict: false }
+  );
+  const consult_dspeciesReff = connReff.model(
+    "consult_dspecies",
+    consult_dspeciesSchema
+  );
+  const consult_dspeciesInst = connInst.model(
+    "consult_dspecies",
+    consult_dspeciesSchema
+  );
+
+  var Data = await consult_dspeciesReff
+    .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
+    .lean();
+
+  Data.forEach(async (indexData) => {
+    const doc = await consult_dspeciesInst.updateOne(
+      { recordID: indexData.recordID },
+      { $set: indexData },
+      { upsert: true, lean: true }
+    );
+  });
+
+  const consult_systemSchema = new Schema(
+    {},
+    { timestamps: true, strict: false }
+  );
+  const consult_systemReff = connReff.model(
+    "consult_system",
+    consult_systemSchema
+  );
+  const consult_systemInst = connInst.model(
+    "consult_system",
+    consult_systemSchema
+  );
+
+  var Data = await consult_systemReff
+    .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
+    .lean();
+
+  Data.forEach(async (indexData) => {
+    const doc = await consult_systemInst.updateOne(
+      { recordID: indexData.recordID },
+      { $set: indexData },
+      { upsert: true, lean: true }
+    );
+  });
+
+  const complaintSchema = new Schema({}, { timestamps: true, strict: false });
+  const complaintReff = connReff.model("complaint", complaintSchema);
+  const complaintInst = connInst.model("complaint", complaintSchema);
+
+  var Data = await complaintReff
+    .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
+    .lean();
+
+  Data.forEach(async (indexData) => {
+    const doc = await complaintInst.updateOne(
+      { recordID: indexData.recordID },
+      { $set: indexData },
+      { upsert: true, lean: true }
+    );
+  });
+
+  const consult_dsignsSchema = new Schema(
+    {},
+    { timestamps: true, strict: false }
+  );
+  const consult_dsignsReff = connReff.model(
+    "consult_dsigns",
+    consult_dsignsSchema
+  );
+  const consult_dsignsInst = connInst.model(
+    "consult_dsigns",
+    consult_dsignsSchema
+  );
+
+  var Data = await consult_dsignsReff
+    .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
+    .lean();
+
+  Data.forEach(async (indexData) => {
+    const doc = await consult_dsignsInst.updateOne(
+      { recordID: indexData.recordID },
+      { $set: indexData },
+      { upsert: true, lean: true }
+    );
+  });
+
+  const plan_catSchema = new Schema({}, { timestamps: true, strict: false });
+  const plan_catReff = connReff.model("plan_cat", plan_catSchema);
+  const plan_catInst = connInst.model("plan_cat", plan_catSchema);
+
+  var Data = await plan_catReff
+    .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
+    .lean();
+
+  Data.forEach(async (indexData) => {
+    const doc = await plan_catInst.updateOne(
+      { recordID: indexData.recordID },
+      { $set: indexData },
+      { upsert: true, lean: true }
+    );
+  });
+
+  const plan_subcatSchema = new Schema({}, { timestamps: true, strict: false });
+  const plan_subcatReff = connReff.model("plan_subcat", plan_subcatSchema);
+  const plan_subcatInst = connInst.model("plan_subcat", plan_subcatSchema);
+
+  var Data = await plan_subcatReff
+    .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
+    .lean();
+
+  Data.forEach(async (indexData) => {
+    const doc = await plan_subcatInst.updateOne(
+      { recordID: indexData.recordID },
+      { $set: indexData },
       { upsert: true, lean: true }
     );
   });
