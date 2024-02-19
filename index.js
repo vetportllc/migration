@@ -1,5 +1,10 @@
+require("dotenv").config();
 const express = require("express");
-const port = 3002;
+const config = require("./config");
+const {
+  server: { PORT, environment },
+  BASE_PATH,
+} = config;
 
 // Database
 const { Database } = require("./utils");
@@ -10,8 +15,12 @@ const app = express();
 
 //middleware
 app.use(express.json({ limit: "50mb" })); //body parser
-app.use("/", require("./routes/index"));
-
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
+app.get(BASE_PATH, (_, res) =>
+  res.send(
+    `Welcome to Migration ${environment} server on PORT : ${PORT} ...... Base path - ${BASE_PATH}`
+  )
+);
+app.use(BASE_PATH, require("./routes/index"));
+app.listen(PORT, () => {
+  console.log(`Example app listening at ${PORT}`);
 });
