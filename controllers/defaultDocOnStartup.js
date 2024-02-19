@@ -1004,6 +1004,28 @@ exports.pushData = async (req, res) => {
     );
   });
 
+    // credit Types
+    const creditTypeSchema = new Schema({      
+      id: {
+      type: String,
+      trim: true,
+    }
+  }, { timestamps: true, strict: false });
+    const creditTypeReff = connReff.model("credit_type", creditTypeSchema);
+    const creditTypeInst = connInst.model("credit_type", creditTypeSchema);
+  
+    var Data = await creditTypeReff
+      .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
+      .lean();
+  
+    Data.forEach(async (indexData) => {
+      const doc = await creditTypeInst.updateOne(
+        { id: indexData.id },
+        { $setOnInsert: indexData },
+        { upsert: true, lean: true }
+      );
+    });
+
   console.log("Completed");
   res.status(200).json({ msg: "Data imported successfully" });
 };
