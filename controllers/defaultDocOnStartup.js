@@ -989,8 +989,8 @@ exports.pushData = async (req, res) => {
   const patientSchema = new Schema({}, { timestamps: true, strict: false });
   const patientReff = connReff.model("patient", patientSchema);
   const patientInst = connInst.model("patient", patientSchema);
-  patientregistration.index({ clientId: 1 });
-  patientregistration.index({ patientInfo: "text" });
+  patientSchema.index({ clientId: 1 });
+  patientSchema.index({ patientInfo: "text" });
 
 
   var Data = await patientReff
