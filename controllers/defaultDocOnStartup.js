@@ -1154,39 +1154,6 @@ exports.pushData = async (req, res) => {
     );
   });
 
-  const plan_catSchema = new Schema({}, { timestamps: true, strict: false });
-  const plan_catReff = connReff.model("plan_cat", plan_catSchema);
-  const plan_catInst = connInst.model("plan_cat", plan_catSchema);
-
-  var Data = await plan_catReff
-    .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
-    .lean();
-
-  Data.forEach(async (indexData) => {
-    const doc = await plan_catInst.updateOne(
-      { recordID: indexData.recordID },
-      { $set: indexData },
-      { upsert: true, lean: true }
-    );
-  });
-
-  const plan_subcatSchema = new Schema({}, { timestamps: true, strict: false });
-  const plan_subcatReff = connReff.model("plan_subcat", plan_subcatSchema);
-  const plan_subcatInst = connInst.model("plan_subcat", plan_subcatSchema);
-
-  var Data = await plan_subcatReff
-    .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
-    .lean();
-
-  Data.forEach(async (indexData) => {
-    const doc = await plan_subcatInst.updateOne(
-      { recordID: indexData.recordID },
-      { $set: indexData },
-      { upsert: true, lean: true }
-    );
-  });
-
-
     // Plan category
     const planCatSchema = new Schema({ }, { timestamps: true, strict: false });
     // index for case insensitive unique
