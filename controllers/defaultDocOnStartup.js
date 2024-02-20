@@ -974,6 +974,9 @@ exports.pushData = async (req, res) => {
   const patientSchema = new Schema({}, { timestamps: true, strict: false });
   const patientReff = connReff.model("patient", patientSchema);
   const patientInst = connInst.model("patient", patientSchema);
+  patientregistration.index({ clientId: 1 });
+  patientregistration.index({ patientInfo: "text" });
+
 
   var Data = await patientReff
     .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
@@ -1021,6 +1024,56 @@ exports.pushData = async (req, res) => {
     Data.forEach(async (indexData) => {
       const doc = await creditTypeInst.updateOne(
         { id: indexData.id },
+        { $setOnInsert: indexData },
+        { upsert: true, lean: true }
+      );
+    });
+
+    // Plan category
+    const planCatSchema = new Schema({ }, { timestamps: true, strict: false });
+    // index for case insensitive unique
+    planCatSchema.index(
+  { name: 1, planTypeId: 1 },
+  {
+    collation: { locale: "en", strength: 2 },
+    unique: true,
+  }
+);
+    const planCatReff = connReff.model("plan_cat", planCatSchema);
+    const planCatInst = connInst.model("plan_cat", planCatSchema);
+  
+    var Data = await planCatReff
+      .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
+      .lean();
+  
+    Data.forEach(async (indexData) => {
+      const doc = await planCatInst.updateOne(
+        { recordID: indexData.recordID },
+        { $setOnInsert: indexData },
+        { upsert: true, lean: true }
+      );
+    });
+
+    // Plan sub category
+    const planSubCatSchema = new Schema({ }, { timestamps: true, strict: false });
+    // index for case insensitive unique
+    planSubCatSchema.index(
+  { name: 1, categoryId: 1 },
+  {
+    collation: { locale: "en", strength: 2 },
+    unique: true,
+  }
+);
+    const planSubCatReff = connReff.model("plan_subcat", planSubCatSchema);
+    const planSubCatInst = connInst.model("plan_subcat", planSubCatSchema);
+  
+    var Data = await planSubCatReff
+      .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
+      .lean();
+  
+    Data.forEach(async (indexData) => {
+      const doc = await planSubCatInst.updateOne(
+        { recordID: indexData.recordID },
         { $setOnInsert: indexData },
         { upsert: true, lean: true }
       );
