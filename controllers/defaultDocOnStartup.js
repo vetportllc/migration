@@ -434,6 +434,7 @@ exports.pushData = async (req, res) => {
     );
   });
 
+  // Market category
   const mrkt_categorySchema = new Schema(
     {},
     { timestamps: true, strict: false }
@@ -461,7 +462,31 @@ exports.pushData = async (req, res) => {
     );
   });
 
-  const mrkt_itemSchema = new Schema({}, { timestamps: true, strict: false });
+  // Market ITEMS
+  const mrkt_itemSchema = new Schema(
+    {
+      key: {
+        type: String,
+        unique: true,
+        required: true,
+        trim: true,
+      },
+      name: {
+        type: String,
+        required: true,
+        trim: true,
+      },
+    },
+    { timestamps: true, strict: false }
+  );
+  // index for case insensitive unique
+  mrkt_itemSchema.index(
+    { name: 1 },
+    {
+      collation: { locale: "en", strength: 2 },
+      unique: true,
+    }
+  );
   const mrkt_itemReff = connReff.model("mrkt_item", mrkt_itemSchema);
   const mrkt_itemInst = connInst.model("mrkt_item", mrkt_itemSchema);
 
@@ -472,6 +497,31 @@ exports.pushData = async (req, res) => {
   Data.forEach(async (indexData) => {
     const doc = await mrkt_itemInst.updateOne(
       { key: indexData.key },
+      { $setOnInsert: indexData },
+      { upsert: true, lean: true }
+    );
+  });
+
+  // Market configuration
+  const mrktConfigSchema = new Schema({}, { timestamps: true, strict: false });
+  const mrktConfigReff = connReff.model(
+    "mrkt_config",
+    mrktConfigSchema,
+    "mrkt_config"
+  );
+  const mmrktConfigInst = connInst.model(
+    "mrkt_config",
+    mrktConfigSchema,
+    "mrkt_config"
+  );
+
+  var Data = await mrktConfigReff
+    .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
+    .lean();
+
+  Data.forEach(async (indexData) => {
+    const doc = await mmrktConfigInst.updateOne(
+      { app_no: indexData.app_no },
       { $setOnInsert: indexData },
       { upsert: true, lean: true }
     );
@@ -992,7 +1042,6 @@ exports.pushData = async (req, res) => {
   patientSchema.index({ clientId: 1 });
   patientSchema.index({ patientInfo: "text" });
 
-
   var Data = await patientReff
     .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
     .lean();
@@ -1154,55 +1203,130 @@ exports.pushData = async (req, res) => {
     );
   });
 
-    // Plan category
-    const planCatSchema = new Schema({ }, { timestamps: true, strict: false });
-    // index for case insensitive unique
-    planCatSchema.index(
-  { name: 1, planTypeId: 1 },
-  {
-    collation: { locale: "en", strength: 2 },
-    unique: true,
-  }
-);
-    const planCatReff = connReff.model("plan_cat", planCatSchema);
-    const planCatInst = connInst.model("plan_cat", planCatSchema);
-  
-    var Data = await planCatReff
-      .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
-      .lean();
-  
-    Data.forEach(async (indexData) => {
-      const doc = await planCatInst.updateOne(
-        { recordID: indexData.recordID },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+  // Plan category
+  const planCatSchema = new Schema({}, { timestamps: true, strict: false });
+  // index for case insensitive unique
+  planCatSchema.index(
+    { name: 1, planTypeId: 1 },
+    {
+      collation: { locale: "en", strength: 2 },
+      unique: true,
+    }
+  );
+  const planCatReff = connReff.model("plan_cat", planCatSchema);
+  const planCatInst = connInst.model("plan_cat", planCatSchema);
 
-    // Plan sub category
-    const planSubCatSchema = new Schema({ }, { timestamps: true, strict: false });
-    // index for case insensitive unique
-    planSubCatSchema.index(
-  { name: 1, categoryId: 1 },
-  {
-    collation: { locale: "en", strength: 2 },
-    unique: true,
-  }
-);
-    const planSubCatReff = connReff.model("plan_subcat", planSubCatSchema);
-    const planSubCatInst = connInst.model("plan_subcat", planSubCatSchema);
-  
-    var Data = await planSubCatReff
-      .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
-      .lean();
-  
-    Data.forEach(async (indexData) => {
-      const doc = await planSubCatInst.updateOne(
-        { recordID: indexData.recordID },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+  var Data = await planCatReff
+    .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
+    .lean();
+
+  Data.forEach(async (indexData) => {
+    const doc = await planCatInst.updateOne(
+      { recordID: indexData.recordID },
+      { $setOnInsert: indexData },
+      { upsert: true, lean: true }
+    );
+  });
+
+  // Plan sub category
+  const planSubCatSchema = new Schema({}, { timestamps: true, strict: false });
+  // index for case insensitive unique
+  planSubCatSchema.index(
+    { name: 1, categoryId: 1 },
+    {
+      collation: { locale: "en", strength: 2 },
+      unique: true,
+    }
+  );
+  const planSubCatReff = connReff.model("plan_subcat", planSubCatSchema);
+  const planSubCatInst = connInst.model("plan_subcat", planSubCatSchema);
+
+  var Data = await planSubCatReff
+    .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
+    .lean();
+
+  Data.forEach(async (indexData) => {
+    const doc = await planSubCatInst.updateOne(
+      { recordID: indexData.recordID },
+      { $setOnInsert: indexData },
+      { upsert: true, lean: true }
+    );
+  });
+
+  // Payment Group
+  const payGrpSchema = new Schema({}, { timestamps: true, strict: false });
+  // index for case insensitive unique
+  payGrpSchema.index(
+    { name: 1 },
+    {
+      collation: { locale: "en", strength: 2 },
+      unique: true,
+    }
+  );
+  const payGrpReff = connReff.model("pay_group", payGrpSchema);
+  const payGrpInst = connInst.model("pay_group", payGrpSchema);
+
+  var Data = await payGrpReff
+    .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
+    .lean();
+
+  Data.forEach(async (indexData) => {
+    const doc = await payGrpInst.updateOne(
+      { recordID: indexData.recordID },
+      { $setOnInsert: indexData },
+      { upsert: true, lean: true }
+    );
+  });
+
+  // Payment Type
+  const payTypeSchema = new Schema({}, { timestamps: true, strict: false });
+  // index for case insensitive unique
+  payTypeSchema.index(
+    { name: 1, paymentGroupId: 1 },
+    {
+      collation: { locale: "en", strength: 2 },
+      unique: true,
+    }
+  );
+  const payTypeReff = connReff.model("pay_type", payTypeSchema);
+  const payTypeInst = connInst.model("pay_type", payTypeSchema);
+
+  var Data = await payTypeReff
+    .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
+    .lean();
+
+  Data.forEach(async (indexData) => {
+    const doc = await payTypeInst.updateOne(
+      { recordID: indexData.recordID },
+      { $setOnInsert: indexData },
+      { upsert: true, lean: true }
+    );
+  });
+
+  // Reason for visit
+  const visitRsnSchema = new Schema({}, { timestamps: true, strict: false });
+  // index for case insensitive unique
+  visitRsnSchema.index(
+    { name: 1 },
+    {
+      collation: { locale: "en", strength: 2 },
+      unique: true,
+    }
+  );
+  const visitRsnReff = connReff.model("visitreason", visitRsnSchema);
+  const visitRsnInst = connInst.model("visitreason", visitRsnSchema);
+
+  var Data = await visitRsnReff
+    .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
+    .lean();
+
+  Data.forEach(async (indexData) => {
+    const doc = await visitRsnInst.updateOne(
+      { name: indexData.name },
+      { $setOnInsert: indexData },
+      { upsert: true, lean: true }
+    );
+  });
 
   console.log("Completed");
   res.status(200).json({ msg: "Data imported successfully" });
