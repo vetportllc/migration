@@ -10,6 +10,7 @@ exports.pushData = async (req, res) => {
     const connReff = mongoose.createConnection(process.env.MONGO);
     const connInst = mongoose.createConnection(instanceURL);
 
+    // States
     const stateSchema = new Schema({}, { timestamps: true, strict: false });
     // index for case insensitive unique
     stateSchema.index(
@@ -22,19 +23,23 @@ exports.pushData = async (req, res) => {
 
     const stateReff = connReff.model("state", stateSchema);
     const stateInst = connInst.model("state", stateSchema);
+    await stateInst.syncIndexes();
 
     var Data = await stateReff
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await stateInst.updateOne(
-        { recordID: indexData.recordID },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return stateInst.updateOne(
+          { recordID: indexData.recordID },
+          { $setOnInsert: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
+    // Plan Type
     const plantypeSchema = new Schema(
       {
         id: {
@@ -54,19 +59,23 @@ exports.pushData = async (req, res) => {
     );
     const plantypeReff = connReff.model("plan_type", plantypeSchema);
     const plantypeInst = connInst.model("plan_type", plantypeSchema);
+    await plantypeInst.syncIndexes();
 
     var Data = await plantypeReff
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await plantypeInst.updateOne(
-        { id: indexData.id, recordID: indexData.recordID },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return plantypeInst.updateOne(
+          { id: indexData.id, recordID: indexData.recordID },
+          { $setOnInsert: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
+    // Plan Action
     const plan_actionSchema = new Schema(
       {
         id: {
@@ -87,18 +96,21 @@ exports.pushData = async (req, res) => {
 
     const plan_actionReff = connReff.model("planaction", plan_actionSchema);
     const plan_actionInst = connInst.model("planaction", plan_actionSchema);
+    await plan_actionInst.syncIndexes();
 
     var Data = await plan_actionReff
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await plan_actionInst.updateOne(
-        { id: indexData.id },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return plan_actionInst.updateOne(
+          { id: indexData.id },
+          { $setOnInsert: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
     // Content Type
     const contentTypeSchema = new Schema(
@@ -118,20 +130,20 @@ exports.pushData = async (req, res) => {
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await contentTypeInst.updateOne(
-        { id: indexData.id },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
-
-    const consult_speciesSchema = new Schema(
-      {},
-      { timestamps: true, strict: false }
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return contentTypeInst.updateOne(
+          { id: indexData.id },
+          { $setOnInsert: indexData },
+          { upsert: true, lean: true }
+        );
+      })
     );
+
+    // Species
+    const speciesSchema = new Schema({}, { timestamps: true, strict: false });
     // index for case insensitive unique
-    consult_speciesSchema.index(
+    speciesSchema.index(
       { name: 1 },
       {
         collation: { locale: "en", strength: 2 },
@@ -139,27 +151,25 @@ exports.pushData = async (req, res) => {
       }
     );
 
-    const consult_speciesReff = connReff.model(
-      "species",
-      consult_speciesSchema
-    );
-    const consult_speciesInst = connInst.model(
-      "species",
-      consult_speciesSchema
-    );
+    const speciesReff = connReff.model("species", speciesSchema);
+    const speciesInst = connInst.model("species", speciesSchema);
+    await speciesInst.syncIndexes();
 
-    var Data = await consult_speciesReff
+    var Data = await speciesReff
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await consult_speciesInst.updateOne(
-        { recordID: indexData.recordID },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return speciesInst.updateOne(
+          { recordID: indexData.recordID },
+          { $setOnInsert: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
+    // Breed
     const breedSchema = new Schema({}, { timestamps: true, strict: false });
     // index for case insensitive unique
     breedSchema.index(
@@ -171,19 +181,23 @@ exports.pushData = async (req, res) => {
     );
     const breedReff = connReff.model("breed", breedSchema);
     const breedInst = connInst.model("breed", breedSchema);
+    await breedInst.syncIndexes();
 
     var Data = await breedReff
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await breedInst.updateOne(
-        { recordID: indexData.recordID },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return breedInst.updateOne(
+          { recordID: indexData.recordID },
+          { $setOnInsert: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
+    // Sex
     const sexSchema = new Schema({}, { timestamps: true, strict: false });
     // index for case insensitive unique
     sexSchema.index(
@@ -195,6 +209,7 @@ exports.pushData = async (req, res) => {
     );
     const sexReff = connReff.model("sex", sexSchema);
     const sexInst = connInst.model("sex", sexSchema);
+    await sexInst.syncIndexes();
 
     var Data = await sexReff
       .find(
@@ -211,15 +226,18 @@ exports.pushData = async (req, res) => {
       )
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await sexInst.updateOne(
-        { recordID: indexData.recordID },
-        //{ $setOnInsert: databody },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return sexInst.updateOne(
+          { recordID: indexData.recordID },
+          //{ $setOnInsert: databody },
+          { $setOnInsert: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
+    // Color
     const colorSchema = new Schema({}, { timestamps: true, strict: false });
     // index for case insensitive unique
     colorSchema.index(
@@ -231,21 +249,25 @@ exports.pushData = async (req, res) => {
     );
     const colorReff = connReff.model("color", colorSchema);
     const colorInst = connInst.model("color", colorSchema);
+    await colorInst.syncIndexes();
 
     var Data = await colorReff
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await colorInst.updateOne(
-        { recordID: indexData.recordID },
-        //{ $setOnInsert: databody },
-        { $setOnInsert: indexData },
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return colorInst.updateOne(
+          { recordID: indexData.recordID },
+          //{ $setOnInsert: databody },
+          { $setOnInsert: indexData },
 
-        { upsert: true, lean: true }
-      );
-    });
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
+    // Country
     const countrySchema = new Schema({}, { timestamps: true, strict: false });
     // index for case insensitive unique
     countrySchema.index(
@@ -257,19 +279,23 @@ exports.pushData = async (req, res) => {
     );
     const countryReff = connReff.model("country", countrySchema);
     const countryInst = connInst.model("country", countrySchema);
+    await countryInst.syncIndexes();
 
     var Data = await countryReff
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await countryInst.updateOne(
-        { recordID: indexData.recordID },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return countryInst.updateOne(
+          { recordID: indexData.recordID },
+          { $setOnInsert: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
+    // Instance
     const instanceSchema = new Schema({}, { timestamps: true, strict: false });
     const instanceReff = connReff.model("instance", instanceSchema);
     const instanceInst = connInst.model("instance", instanceSchema);
@@ -278,14 +304,17 @@ exports.pushData = async (req, res) => {
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await instanceInst.updateOne(
-        { recordID: indexData.recordID },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return instanceInst.updateOne(
+          { recordID: indexData.recordID },
+          { $setOnInsert: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
+    // Timezone
     const timezoneSchema = new Schema({}, { timestamps: true, strict: false });
     const timezoneReff = connReff.model("timezone", timezoneSchema);
     const timezoneInst = connInst.model("timezone", timezoneSchema);
@@ -294,14 +323,17 @@ exports.pushData = async (req, res) => {
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await timezoneInst.updateOne(
-        { name: indexData.name, abbr: indexData.abbr },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return timezoneInst.updateOne(
+          { name: indexData.name, abbr: indexData.abbr },
+          { $setOnInsert: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
+    // Phone Type
     const phone_typeSchema = new Schema(
       {},
       { timestamps: true, strict: false }
@@ -316,19 +348,23 @@ exports.pushData = async (req, res) => {
     );
     const phone_typeReff = connReff.model("phone_type", phone_typeSchema);
     const phone_typeInst = connInst.model("phone_type", phone_typeSchema);
+    await phone_typeInst.syncIndexes();
 
     var Data = await phone_typeReff
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await phone_typeInst.updateOne(
-        { recordID: indexData.recordID },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return phone_typeInst.updateOne(
+          { recordID: indexData.recordID },
+          { $setOnInsert: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
+    // Species Color
     const species_colorSchema = new Schema(
       {},
       { timestamps: true, strict: false }
@@ -346,14 +382,17 @@ exports.pushData = async (req, res) => {
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await species_colorInst.updateOne(
-        { recordID: indexData.recordID },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return species_colorInst.updateOne(
+          { recordID: indexData.recordID },
+          { $setOnInsert: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
+    // Staff Designation
     const staff_designationSchema = new Schema(
       {},
       { timestamps: true, strict: false }
@@ -374,19 +413,23 @@ exports.pushData = async (req, res) => {
       "staff_designation",
       staff_designationSchema
     );
+    await staff_designationInst.syncIndexes();
 
     var Data = await staff_designationReff
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await staff_designationInst.updateOne(
-        { code: indexData.code },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return staff_designationInst.updateOne(
+          { code: indexData.code },
+          { $setOnInsert: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
+    // Specialisation
     const specialistSchema = new Schema(
       {},
       { timestamps: true, strict: false }
@@ -402,19 +445,23 @@ exports.pushData = async (req, res) => {
 
     const specialistReff = connReff.model("specialist", specialistSchema);
     const specialistInst = connInst.model("specialist", specialistSchema);
+    await specialistInst.syncIndexes();
 
     var Data = await specialistReff
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await specialistInst.updateOne(
-        { recordID: indexData.recordID },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return specialistInst.updateOne(
+          { recordID: indexData.recordID },
+          { $setOnInsert: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
+    // S3 config
     const s3_configSchema = new Schema({}, { timestamps: true, strict: false });
     const s3_configReff = connReff.model("s3_config", s3_configSchema);
     const s3_configInst = connInst.model("s3_config", s3_configSchema);
@@ -423,14 +470,17 @@ exports.pushData = async (req, res) => {
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await s3_configInst.updateOne(
-        { recordID: indexData.recordID },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return s3_configInst.updateOne(
+          { recordID: indexData.recordID },
+          { $setOnInsert: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
+    // Reference
     const referenceSchema = new Schema({}, { timestamps: true, strict: false });
     const referenceReff = connReff.model("reference", referenceSchema);
     const referenceInst = connInst.model("reference", referenceSchema);
@@ -439,13 +489,15 @@ exports.pushData = async (req, res) => {
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await referenceInst.updateOne(
-        { recordID: indexData.recordID },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return referenceInst.updateOne(
+          { recordID: indexData.recordID },
+          { $setOnInsert: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
     // Market category
     const mrkt_categorySchema = new Schema(
@@ -467,13 +519,15 @@ exports.pushData = async (req, res) => {
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await mrkt_categoryInst.updateOne(
-        { recordID: indexData.recordID },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return mrkt_categoryInst.updateOne(
+          { recordID: indexData.recordID },
+          { $setOnInsert: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
     // Market ITEMS
     const mrkt_itemSchema = new Schema(
@@ -502,18 +556,21 @@ exports.pushData = async (req, res) => {
     );
     const mrkt_itemReff = connReff.model("mrkt_item", mrkt_itemSchema);
     const mrkt_itemInst = connInst.model("mrkt_item", mrkt_itemSchema);
+    await mrkt_itemInst.syncIndexes();
 
     var Data = await mrkt_itemReff
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await mrkt_itemInst.updateOne(
-        { key: indexData.key },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return mrkt_itemInst.updateOne(
+          { key: indexData.key },
+          { $setOnInsert: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
     // Market configuration
     const mrktConfigSchema = new Schema(
@@ -535,14 +592,17 @@ exports.pushData = async (req, res) => {
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await mmrktConfigInst.updateOne(
-        { app_no: indexData.app_no },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return mmrktConfigInst.updateOne(
+          { app_no: indexData.app_no },
+          { $setOnInsert: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
+    // Diagnisus
     const diagnosisSchema = new Schema({}, { timestamps: true, strict: false });
     const diagnosisReff = connReff.model("diagnosis", diagnosisSchema);
     const diagnosisInst = connInst.model("diagnosis", diagnosisSchema);
@@ -551,14 +611,17 @@ exports.pushData = async (req, res) => {
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await diagnosisInst.updateOne(
-        { recordID: indexData.recordID },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return diagnosisInst.updateOne(
+          { recordID: indexData.recordID },
+          { $setOnInsert: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
+    // Soap Types
     const soap_typeSchema = new Schema(
       {
         id: {
@@ -583,13 +646,15 @@ exports.pushData = async (req, res) => {
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await soap_typeInst.updateOne(
-        { id: indexData.id, recordID: indexData.recordID },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return soap_typeInst.updateOne(
+          { id: indexData.id, recordID: indexData.recordID },
+          { $setOnInsert: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
     // Template masters
     const template_masterSchema = new Schema(
@@ -618,13 +683,15 @@ exports.pushData = async (req, res) => {
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await template_masterInst.updateOne(
-        { id: indexData.id },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return template_masterInst.updateOne(
+          { id: indexData.id },
+          { $setOnInsert: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
     // Template types
     const template_typeSchema = new Schema(
@@ -652,18 +719,21 @@ exports.pushData = async (req, res) => {
       "template_type",
       template_typeSchema
     );
+    await template_typeInst.syncIndexes();
 
     var Data = await template_typeReff
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await template_typeInst.updateOne(
-        { id: indexData.id },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return template_typeInst.updateOne(
+          { id: indexData.id },
+          { $setOnInsert: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
     // Template keys
     const template_keySchema = new Schema(
@@ -672,18 +742,21 @@ exports.pushData = async (req, res) => {
     );
     const template_keyReff = connReff.model("template_key", template_keySchema);
     const template_keyInst = connInst.model("template_key", template_keySchema);
+    await template_keyInst.syncIndexes();
 
     var Data = await template_keyReff
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await template_keyInst.updateOne(
-        { tag: indexData.tag },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return template_keyInst.updateOne(
+          { tag: indexData.tag },
+          { $setOnInsert: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
     // Template keys map
     const template_keymapSchema = new Schema(
@@ -698,18 +771,21 @@ exports.pushData = async (req, res) => {
       "template_keymap",
       template_keymapSchema
     );
+    await template_keymapInst.syncIndexes();
 
     var Data = await template_keymapReff
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await template_keymapInst.updateOne(
-        { keyId: indexData.keyId, tempId: indexData.tempId },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return template_keymapInst.updateOne(
+          { keyId: indexData.keyId, tempId: indexData.tempId },
+          { $setOnInsert: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
     // Templates
     const templateSchema = new Schema(
@@ -718,18 +794,21 @@ exports.pushData = async (req, res) => {
     );
     const templateReff = connReff.model("template", templateSchema);
     const templateInst = connInst.model("template", templateSchema);
+    await templateInst.syncIndexes();
 
     var Data = await templateReff
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await templateInst.updateOne(
-        { name: indexData.name },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return templateInst.updateOne(
+          { name: indexData.name },
+          { $setOnInsert: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
     // usergroup
     const usergroupSchema = new Schema({}, { timestamps: true, strict: false });
@@ -748,13 +827,15 @@ exports.pushData = async (req, res) => {
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await usergrp_keyInst.updateOne(
-        { name: indexData.name },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return usergrp_keyInst.updateOne(
+          { name: indexData.name },
+          { $setOnInsert: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
     //usergroup
 
     // language_config
@@ -774,13 +855,15 @@ exports.pushData = async (req, res) => {
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await langCfg_keyInst.updateOne(
-        { id: indexData.id },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return langCfg_keyInst.updateOne(
+          { id: indexData.id },
+          { $setOnInsert: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
     //language_config
 
     // Modules
@@ -800,13 +883,15 @@ exports.pushData = async (req, res) => {
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await modulesInst.updateOne(
-        { id: indexData.id },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return modulesInst.updateOne(
+          { id: indexData.id },
+          { $setOnInsert: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
     // Sub modules
     const subModulesSchema = new Schema(
@@ -825,13 +910,15 @@ exports.pushData = async (req, res) => {
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await subModulesInst.updateOne(
-        { id: indexData.id },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return subModulesInst.updateOne(
+          { id: indexData.id },
+          { $setOnInsert: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
     // Menu
     const menuSchema = new Schema(
@@ -850,13 +937,15 @@ exports.pushData = async (req, res) => {
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await menuInst.updateOne(
-        { id: indexData.id },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return menuInst.updateOne(
+          { id: indexData.id },
+          { $setOnInsert: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
     // Actions
     const actionsSchema = new Schema(
@@ -875,13 +964,15 @@ exports.pushData = async (req, res) => {
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await actionsInst.updateOne(
-        { id: indexData.id },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return actionsInst.updateOne(
+          { id: indexData.id },
+          { $setOnInsert: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
     // Pages
     const pagesSchema = new Schema(
@@ -900,13 +991,15 @@ exports.pushData = async (req, res) => {
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await pagesInst.updateOne(
-        { id: indexData.id },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return pagesInst.updateOne(
+          { id: indexData.id },
+          { $setOnInsert: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
     // Date format
     const dateFormatSchema = new Schema(
@@ -928,13 +1021,15 @@ exports.pushData = async (req, res) => {
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await dateFormatInst.updateOne(
-        { format: indexData.format },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return dateFormatInst.updateOne(
+          { format: indexData.format },
+          { $setOnInsert: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
     // Time format
     const timeFormatSchema = new Schema(
@@ -956,13 +1051,15 @@ exports.pushData = async (req, res) => {
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await timeFormatInst.updateOne(
-        { format: indexData.format },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return timeFormatInst.updateOne(
+          { format: indexData.format },
+          { $setOnInsert: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
     // Currencies
     const currencySchema = new Schema({}, { timestamps: true, strict: false });
@@ -973,13 +1070,15 @@ exports.pushData = async (req, res) => {
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await currencyInst.updateOne(
-        { code: indexData.code },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return currencyInst.updateOne(
+          { code: indexData.code },
+          { $setOnInsert: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
     // Appointment status
     const appStatusSchema = new Schema({}, { timestamps: true, strict: false });
@@ -993,18 +1092,21 @@ exports.pushData = async (req, res) => {
     );
     const appStatusReff = connReff.model("app_status", appStatusSchema);
     const appStatusInst = connInst.model("app_status", appStatusSchema);
+    await appStatusInst.syncIndexes();
 
     var Data = await appStatusReff
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await appStatusInst.updateOne(
-        { name: indexData.name },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return appStatusInst.updateOne(
+          { name: indexData.name },
+          { $setOnInsert: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
     // Package types
     const pkgTypesSchema = new Schema({}, { timestamps: true, strict: false });
@@ -1015,13 +1117,15 @@ exports.pushData = async (req, res) => {
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await pkgTypesInst.updateOne(
-        { id: indexData.id },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return pkgTypesInst.updateOne(
+          { id: indexData.id },
+          { $setOnInsert: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
     // Sequence
     const sequenceSchema = new Schema({}, { timestamps: true, strict: false });
@@ -1032,13 +1136,15 @@ exports.pushData = async (req, res) => {
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await sequenceInst.updateOne(
-        { id: indexData.id },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return sequenceInst.updateOne(
+          { id: indexData.id },
+          { $setOnInsert: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
     // OTC Client
     const clientSchema = new Schema({}, { timestamps: true, strict: false });
@@ -1049,32 +1155,36 @@ exports.pushData = async (req, res) => {
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await clientInst.updateOne(
-        { otc: indexData.otc },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return clientInst.updateOne(
+          { otc: indexData.otc },
+          { $setOnInsert: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
     // OTC Patient
     const patientSchema = new Schema({}, { timestamps: true, strict: false });
+    patientSchema.index({ clientId: 1, patientInfo: "text" });
     const patientReff = connReff.model("patient", patientSchema);
     const patientInst = connInst.model("patient", patientSchema);
-    patientSchema.index({ clientId: 1 });
-    patientSchema.index({ patientInfo: "text" });
+    await patientInst.syncIndexes();
 
     var Data = await patientReff
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await patientInst.updateOne(
-        { otc: indexData.otc },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return patientInst.updateOne(
+          { otc: indexData.otc },
+          { $setOnInsert: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
     // OTC Encounter
     const encounterSchema = new Schema({}, { timestamps: true, strict: false });
@@ -1085,13 +1195,15 @@ exports.pushData = async (req, res) => {
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await encounterInst.updateOne(
-        { otc: indexData.otc },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return encounterInst.updateOne(
+          { otc: indexData.otc },
+          { $setOnInsert: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
     // credit Types
     const creditTypeSchema = new Schema(
@@ -1110,14 +1222,17 @@ exports.pushData = async (req, res) => {
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await creditTypeInst.updateOne(
-        { id: indexData.id },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return creditTypeInst.updateOne(
+          { id: indexData.id },
+          { $setOnInsert: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
+    // Label Setup
     const label_setupSchema = new Schema(
       {},
       { timestamps: true, strict: false }
@@ -1129,14 +1244,17 @@ exports.pushData = async (req, res) => {
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await label_setupInst.updateOne(
-        { recordID: indexData.recordID },
-        { $set: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return label_setupInst.updateOne(
+          { recordID: indexData.recordID },
+          { $set: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
+    // Consult Dspecies
     const consult_dspeciesSchema = new Schema(
       {},
       { timestamps: true, strict: false }
@@ -1154,14 +1272,17 @@ exports.pushData = async (req, res) => {
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await consult_dspeciesInst.updateOne(
-        { recordID: indexData.recordID },
-        { $set: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return consult_dspeciesInst.updateOne(
+          { recordID: indexData.recordID },
+          { $set: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
+    // consult system
     const consult_systemSchema = new Schema(
       {},
       { timestamps: true, strict: false }
@@ -1179,14 +1300,17 @@ exports.pushData = async (req, res) => {
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await consult_systemInst.updateOne(
-        { recordID: indexData.recordID },
-        { $set: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return consult_systemInst.updateOne(
+          { recordID: indexData.recordID },
+          { $set: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
+    // Complaint
     const complaintSchema = new Schema({}, { timestamps: true, strict: false });
     const complaintReff = connReff.model("complaint", complaintSchema);
     const complaintInst = connInst.model("complaint", complaintSchema);
@@ -1195,14 +1319,17 @@ exports.pushData = async (req, res) => {
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await complaintInst.updateOne(
-        { recordID: indexData.recordID },
-        { $set: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return complaintInst.updateOne(
+          { recordID: indexData.recordID },
+          { $set: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
+    // Consult Dsigns
     const consult_dsignsSchema = new Schema(
       {},
       { timestamps: true, strict: false }
@@ -1220,13 +1347,15 @@ exports.pushData = async (req, res) => {
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await consult_dsignsInst.updateOne(
-        { recordID: indexData.recordID },
-        { $set: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return consult_dsignsInst.updateOne(
+          { recordID: indexData.recordID },
+          { $set: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
     // Plan category
     const planCatSchema = new Schema({}, { timestamps: true, strict: false });
@@ -1240,18 +1369,21 @@ exports.pushData = async (req, res) => {
     );
     const planCatReff = connReff.model("plan_cat", planCatSchema);
     const planCatInst = connInst.model("plan_cat", planCatSchema);
+    await planCatInst.syncIndexes();
 
     var Data = await planCatReff
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await planCatInst.updateOne(
-        { recordID: indexData.recordID },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return planCatInst.updateOne(
+          { recordID: indexData.recordID },
+          { $setOnInsert: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
     // Plan sub category
     const planSubCatSchema = new Schema(
@@ -1268,18 +1400,21 @@ exports.pushData = async (req, res) => {
     );
     const planSubCatReff = connReff.model("plan_subcat", planSubCatSchema);
     const planSubCatInst = connInst.model("plan_subcat", planSubCatSchema);
+    await planSubCatInst.syncIndexes();
 
     var Data = await planSubCatReff
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await planSubCatInst.updateOne(
-        { recordID: indexData.recordID },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return planSubCatInst.updateOne(
+          { recordID: indexData.recordID },
+          { $setOnInsert: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
     // Payment Group
     const payGrpSchema = new Schema({}, { timestamps: true, strict: false });
@@ -1293,18 +1428,21 @@ exports.pushData = async (req, res) => {
     );
     const payGrpReff = connReff.model("pay_group", payGrpSchema);
     const payGrpInst = connInst.model("pay_group", payGrpSchema);
+    await payGrpInst.syncIndexes();
 
     var Data = await payGrpReff
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await payGrpInst.updateOne(
-        { recordID: indexData.recordID },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return payGrpInst.updateOne(
+          { recordID: indexData.recordID },
+          { $setOnInsert: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
     // Payment Type
     const payTypeSchema = new Schema({}, { timestamps: true, strict: false });
@@ -1318,18 +1456,21 @@ exports.pushData = async (req, res) => {
     );
     const payTypeReff = connReff.model("pay_type", payTypeSchema);
     const payTypeInst = connInst.model("pay_type", payTypeSchema);
+    await payTypeInst.syncIndexes();
 
     var Data = await payTypeReff
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await payTypeInst.updateOne(
-        { recordID: indexData.recordID },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return payTypeInst.updateOne(
+          { recordID: indexData.recordID },
+          { $setOnInsert: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
 
     // Reason for visit
     const visitRsnSchema = new Schema({}, { timestamps: true, strict: false });
@@ -1343,18 +1484,40 @@ exports.pushData = async (req, res) => {
     );
     const visitRsnReff = connReff.model("visitreason", visitRsnSchema);
     const visitRsnInst = connInst.model("visitreason", visitRsnSchema);
+    await visitRsnInst.syncIndexes();
 
     var Data = await visitRsnReff
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
       .lean();
 
-    Data.forEach(async (indexData) => {
-      const doc = await visitRsnInst.updateOne(
-        { name: indexData.name },
-        { $setOnInsert: indexData },
-        { upsert: true, lean: true }
-      );
-    });
+    await Promise.allSettled(
+      Data.map((indexData) => {
+        return visitRsnInst.updateOne(
+          { name: indexData.name },
+          { $setOnInsert: indexData },
+          { upsert: true, lean: true }
+        );
+      })
+    );
+
+    // // Relationship
+    // const relationSchema = new Schema({}, { timestamps: true, strict: false });
+    // const relationReff = connReff.model("relationship", relationSchema);
+    // const relationInst = connInst.model("relationship", relationSchema);
+
+    // var Data = await relationReff
+    //   .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
+    //   .lean();
+
+    // await Promise.allSettled(
+    //   Data.map((indexData) => {
+    //     return relationInst.updateOne(
+    //       { name: indexData.name },
+    //       { $setOnInsert: indexData },
+    //       { upsert: true, lean: true }
+    //     );
+    //   })
+    // );
 
     console.log("Completed");
     res.status(200).json({ msg: "Data imported successfully" });
