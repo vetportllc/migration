@@ -1073,7 +1073,7 @@ exports.pushData = async (req, res) => {
     await Promise.allSettled(
       Data.map((indexData) => {
         return currencyInst.updateOne(
-          { code: indexData.code },
+          { recordID: indexData.recordID },
           { $setOnInsert: indexData },
           { upsert: true, lean: true }
         );
@@ -1225,7 +1225,7 @@ exports.pushData = async (req, res) => {
     await Promise.allSettled(
       Data.map((indexData) => {
         return creditTypeInst.updateOne(
-          { id: indexData.id },
+          { recordID: indexData.recordID },
           { $setOnInsert: indexData },
           { upsert: true, lean: true }
         );
@@ -1237,8 +1237,16 @@ exports.pushData = async (req, res) => {
       {},
       { timestamps: true, strict: false }
     );
-    const label_setupReff = connReff.model("label_setup", label_setupSchema);
-    const label_setupInst = connInst.model("label_setup", label_setupSchema);
+    const label_setupReff = connReff.model(
+      "label_setup",
+      label_setupSchema,
+      "label_setup"
+    );
+    const label_setupInst = connInst.model(
+      "label_setup",
+      label_setupSchema,
+      "label_setup"
+    );
 
     var Data = await label_setupReff
       .find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
@@ -1247,7 +1255,7 @@ exports.pushData = async (req, res) => {
     await Promise.allSettled(
       Data.map((indexData) => {
         return label_setupInst.updateOne(
-          { recordID: indexData.recordID },
+          { _id: indexData._id },
           { $set: indexData },
           { upsert: true, lean: true }
         );
